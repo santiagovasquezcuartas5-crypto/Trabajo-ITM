@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>¿Cuál es tu género de música favorito?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+  <main class="caja">
+    <section class="lado">
+      <h1>¿Cuál es tu género de música favorito?</h1>
+      <p>Es una encuesta corta, te toma menos de un minuto.</p>
+      <div class="nota" aria-hidden="true">♪ ♫</div>
+    </section>
+
+    <form method="POST" novalidate>
+      {% with mensajes = get_flashed_messages() %}
+        {% for m in mensajes %}<div class="aviso bien">{{ m }}</div>{% endfor %}
+      {% endwith %}
+      {% if errores.general %}<div class="aviso problema">{{ errores.general }}</div>{% endif %}
+
+      <div class="campo">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" name="nombre" value="{{ datos.nombre or '' }}" class="{{ 'mal' if errores.nombre }}">
+        {% if errores.nombre %}<span class="error">{{ errores.nombre }}</span>{% endif %}
+      </div>
+
+      <div class="campo">
+        <label for="edad">Edad</label>
+        <input id="edad" name="edad" inputmode="numeric" value="{{ datos.edad or '' }}" class="{{ 'mal' if errores.edad }}">
+        {% if errores.edad %}<span class="error">{{ errores.edad }}</span>{% endif %}
+      </div>
+
+      <div class="campo completo">
+        <label>Tu género favorito</label>
+        <div class="fichas">
+          {% for g in generos %}
+            <input type="radio" id="genero{{ loop.index }}" name="genero" value="{{ g }}" {{ 'checked' if datos.genero == g }}>
+            <label for="genero{{ loop.index }}">{{ g }}</label>
+          {% endfor %}
+        </div>
+        {% if errores.genero %}<span class="error">{{ errores.genero }}</span>{% endif %}
+      </div>
+
+      <div class="campo completo">
+        <label for="otro">Si escogiste "Otro", ¿cuál? <span class="opcional">(opcional)</span></label>
+        <input id="otro" name="otro" value="{{ datos.otro or '' }}" class="{{ 'mal' if errores.otro }}">
+        {% if errores.otro %}<span class="error">{{ errores.otro }}</span>{% endif %}
+      </div>
+
+      <div class="campo completo">
+        <label for="artista">Artista o banda favorita <span class="opcional">(opcional)</span></label>
+        <input id="artista" name="artista" value="{{ datos.artista or '' }}">
+      </div>
+
+      <div class="campo completo">
+        <label for="razon">¿Por qué te gusta ese género? <span class="opcional">(opcional)</span></label>
+        <textarea id="razon" name="razon">{{ datos.razon or '' }}</textarea>
+      </div>
+
+      <button type="submit">Enviar respuesta</button>
+    </form>
+  </main>
+</body>
+</html>
